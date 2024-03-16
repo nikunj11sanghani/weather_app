@@ -18,7 +18,7 @@ class GetWeatherDataBloc
   _getWeatherData(GetDataEvent event, Emitter<GetWeatherDataState> emit) async {
     try {
       Response response = await APIController.getData(
-          "https://bhagavad-gita3.p.rapidapi.com/v2/chapters/");
+          "http://api.weatherapi.com/v1/current.json?key=b7a29d4997bc470282233422241503&q=${event.location}");
       if (response.statusCode == 200) {
         log(response.body);
         WeatherModel data = WeatherModel.fromJson(jsonDecode(response.body));
