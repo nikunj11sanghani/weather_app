@@ -36,8 +36,46 @@ class _DataScreenState extends State<DataScreen> {
                 children: [
                   ElevatedButton(
                       onPressed: () {}, child: const Text("Fetch Data")),
-                  Text(state.model.current.tempC.toString()),
-                  Text(state.model.current.tempF.toString()),
+                  Padding(
+                    padding: const EdgeInsets.all(6.0),
+                    child: Card(
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8)),
+                      clipBehavior: Clip.hardEdge,
+                      elevation: 5,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Image.asset("assets/temp.jpg",
+                                fit: BoxFit.fill,
+                                height: 130,
+                                width: double.infinity),
+                            RowHelper(
+                                title: "Location : ",
+                                subTitle:
+                                    "${state.model.location.name} , ${state.model.location.region} - ${state.model.location.country}"),
+                            const SizedBox(height: 10),
+                            RowHelper(
+                              title: "Date & Time : ",
+                              subTitle: state.model.current.lastUpdated,
+                            ),
+                            const SizedBox(height: 10),
+                            RowHelper(
+                              title: " Current Temperature in Celsius : ",
+                              subTitle: state.model.current.tempC.toString(),
+                            ),
+                            const SizedBox(height: 10),
+                            RowHelper(
+                              title: "Current Temperature in Fern-hit : ",
+                              subTitle: state.model.current.tempF.toString(),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  )
                 ],
               );
             }
@@ -48,6 +86,34 @@ class _DataScreenState extends State<DataScreen> {
           },
         ),
       ),
+    );
+  }
+}
+
+class RowHelper extends StatelessWidget {
+  final String title;
+  final String subTitle;
+
+  const RowHelper({super.key, required this.title, required this.subTitle});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Flexible(
+          child: Text(
+            title,
+            style: const TextStyle(
+                fontSize: 15, color: Colors.black, fontWeight: FontWeight.bold),
+          ),
+        ),
+        Text(
+          subTitle,
+          style: const TextStyle(
+              fontSize: 15, color: Colors.black, fontWeight: FontWeight.bold),
+        ),
+      ],
     );
   }
 }
