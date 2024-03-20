@@ -1,14 +1,11 @@
 import 'dart:developer';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:weather_app/common_widgets/custom_app_bar.dart';
 import 'package:weather_app/controller/bloc/get_weather_data_bloc.dart';
-import 'package:weather_app/controller/bloc/get_weather_data_event.dart';
-import 'package:weather_app/controller/bloc/get_weather_data_state.dart';
 import 'package:weather_app/view/data_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -21,6 +18,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
+    _handleLocationPermission();
     _currentLocationFuture = _getCurrentLocation();
     super.initState();
   }
@@ -52,6 +50,40 @@ class _HomeScreenState extends State<HomeScreen> {
     } catch (e) {
       print(e);
     }
+  }
+
+  Future<bool> _handleLocationPermission() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text(
+                'Location services are disabled. Please enable the services')));
+      }
+
+      return false;
+    }
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied && mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Location permissions are denied')));
+        return false;
+      }
+    }
+    if (permission == LocationPermission.deniedForever) {
+      if(mounted){
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text(
+                'Location permissions are permanently denied, we cannot request permissions.')));
+      }
+      return false;
+    }
+    return true;
   }
 
   @override
