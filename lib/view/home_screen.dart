@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:weather_app/common_widgets/custom_app_bar.dart';
 import 'package:weather_app/controller/bloc/get_weather_data_bloc.dart';
 import 'package:weather_app/view/data_screen.dart';
@@ -18,7 +19,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
-    _handleLocationPermission();
+    askPermission().then((value) => _handleLocationPermission());
     _currentLocationFuture = _getCurrentLocation();
     super.initState();
   }
@@ -52,6 +53,28 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  Future<void> askPermission() async {
+    PermissionStatus status = await Permission.location.request();
+    if (status.isGranted) {
+      _handleLocationPermission();
+    } else {
+      AlertDialog(
+        actions: [
+          Column(
+            children: [
+              const Text("Need Location Permission From App Settings"),
+              ElevatedButton(
+                  onPressed: () {
+                    openAppSettings();
+                  },
+                  child: const Text("App Setting"))
+            ],
+          ),
+        ],
+      );
+    }
+  }
+
   Future<bool> _handleLocationPermission() async {
     bool serviceEnabled;
     LocationPermission permission;
@@ -76,7 +99,7 @@ class _HomeScreenState extends State<HomeScreen> {
       }
     }
     if (permission == LocationPermission.deniedForever) {
-      if(mounted){
+      if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
             content: Text(
                 'Location permissions are permanently denied, we cannot request permissions.')));
@@ -92,6 +115,7 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: const CustomAppBar(title: "Weather Data"),
       body: Center(
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             FutureBuilder(
               future: _currentLocationFuture,

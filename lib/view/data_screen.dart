@@ -34,8 +34,6 @@ class _DataScreenState extends State<DataScreen> {
             if (state is GetWeatherDataSuccess) {
               return Column(
                 children: [
-                  ElevatedButton(
-                      onPressed: () {}, child: const Text("Fetch Data")),
                   Padding(
                     padding: const EdgeInsets.all(6.0),
                     child: Card(

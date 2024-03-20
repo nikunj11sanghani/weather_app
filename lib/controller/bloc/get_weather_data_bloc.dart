@@ -16,6 +16,7 @@ class GetWeatherDataBloc
   }
 
   _getWeatherData(GetDataEvent event, Emitter<GetWeatherDataState> emit) async {
+    emit(GetWeatherDataLoading());
     try {
       Response response = await APIController.getData(
           "http://api.weatherapi.com/v1/current.json?key=b7a29d4997bc470282233422241503&q=${event.location}");
@@ -27,7 +28,7 @@ class GetWeatherDataBloc
         emit(GetWeatherDataFailure(msg: response.body));
       }
     } catch (e) {
-      log(e.toString());
+      emit(GetWeatherDataFailure(msg: "Network Error Please Restart the app or try after some time"));
     }
   }
 }
