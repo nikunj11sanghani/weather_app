@@ -81,8 +81,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
+      await Geolocator.openLocationSettings()
+          .then((value) => _currentLocationFuture = _getCurrentLocation());
       if (mounted) {
-        await Geolocator.openLocationSettings().then((value) => _currentLocationFuture = _getCurrentLocation());
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
             content: Text(
                 'Location services are disabled. Please enable the services')));
@@ -113,7 +114,12 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CustomAppBar(title: "Weather Data"),
+      appBar: AppBar(
+        centerTitle: true,
+        title: const Text("Home Screen",
+            style: TextStyle(
+                color: Colors.deepPurpleAccent, fontWeight: FontWeight.bold)),
+      ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -144,11 +150,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 }
               },
             ),
-
           ],
         ),
       ),
     );
   }
 }
-

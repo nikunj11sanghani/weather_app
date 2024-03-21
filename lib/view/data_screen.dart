@@ -27,7 +27,7 @@ class _DataScreenState extends State<DataScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CustomAppBar(title: "Weather Data"),
+      appBar: const CustomAppBar(title: "Weather Data",),
       body: Center(
         child: BlocBuilder<GetWeatherDataBloc, GetWeatherDataState>(
           builder: (BuildContext context, GetWeatherDataState state) {
