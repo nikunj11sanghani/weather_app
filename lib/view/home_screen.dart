@@ -82,6 +82,7 @@ class _HomeScreenState extends State<HomeScreen> {
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
       if (mounted) {
+        await Geolocator.openLocationSettings().then((value) => _currentLocationFuture = _getCurrentLocation());
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
             content: Text(
                 'Location services are disabled. Please enable the services')));
@@ -143,9 +144,11 @@ class _HomeScreenState extends State<HomeScreen> {
                 }
               },
             ),
+
           ],
         ),
       ),
     );
   }
 }
+
